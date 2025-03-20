@@ -24,6 +24,8 @@ ProTreeWidget::ProTreeWidget(QWidget* parent):QTreeWidget(parent),_active_item(n
     connect(_action_setstart, &QAction::triggered,this,&ProTreeWidget::SlotSetActive);
     connect(_action_closepro,&QAction::triggered,this,&ProTreeWidget::SlotClosePro);
 
+    connect(this,&ProTreeWidget::itemDoubleClicked,this,&ProTreeWidget::SlotDoubleClickedItem);
+
 }
 
 void ProTreeWidget::AddProToTree(const QString &name, const QString &path)
@@ -62,6 +64,22 @@ void ProTreeWidget::SlotItemPressed(QTreeWidgetItem *pressedItem, int column)
             menu.addAction(_action_closepro);
             menu.addAction(_action_slideshow);
             menu.exec(QCursor::pos());
+        }
+    }
+}
+
+void ProTreeWidget::SlotDoubleClickedItem(QTreeWidgetItem *doubleitem, int col)
+{
+    if(QGuiApplication::mouseButtons() == Qt::LeftButton){
+        auto tree_doubleItem = dynamic_cast<ProTreeItem*>(doubleitem);
+        if(!tree_doubleItem){
+            return;
+        }
+
+        int itemtype = tree_doubleItem->type();
+        if(itemtype==TreeItemPic){
+            emit SigUpdateSelected(tree_doubleItem->GetPath());
+            _selected_item = doubleitem;
         }
     }
 }

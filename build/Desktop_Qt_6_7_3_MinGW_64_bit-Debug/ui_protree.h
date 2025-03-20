@@ -42,6 +42,9 @@ public:
         verticalLayout->addWidget(label_pro);
 
         treeWidget = new ProTreeWidget(ProTree);
+        QTreeWidgetItem *__qtreewidgetitem = new QTreeWidgetItem();
+        __qtreewidgetitem->setText(0, QString::fromUtf8("1"));
+        treeWidget->setHeaderItem(__qtreewidgetitem);
         treeWidget->setObjectName("treeWidget");
 
         verticalLayout->addWidget(treeWidget);

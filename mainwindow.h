@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QResizeEvent>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -20,6 +21,9 @@ public:
 private:
     Ui::MainWindow *ui;
     QWidget* _protree;
+    QWidget* _picshow;
+protected:
+    virtual void resizeEvent(QResizeEvent* event);
 private slots:
     void SlotCreatePro(bool);
     void SlotOpenPro(bool);

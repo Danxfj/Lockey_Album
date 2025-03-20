@@ -7,10 +7,12 @@
 #include "protree.h"
 #include <QFileDialog>
 #include "protreewidget.h"
+#include "picshow.h"
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    this->setMinimumSize(1629,869);
     ui->setupUi(this);
     //创建菜单
     QMenu* menu_file = menuBar()->addMenu(tr("文件(&F)"));
@@ -42,11 +44,25 @@ MainWindow::MainWindow(QWidget *parent)
     auto* pro_tree_widget =dynamic_cast<ProTreeWidget*>(tree_widget);
 
     connect(this,&MainWindow::SigOpenPro,pro_tree_widget,&ProTreeWidget::SlotOpenPro);
+
+    _picshow = new PicShow();
+    ui->picLayout->addWidget(_picshow);
+
+    auto* pro_pic_show = dynamic_cast<PicShow*>(_picshow);
+    connect(pro_tree_widget,&ProTreeWidget::SigUpdateSelected,pro_pic_show,
+            &PicShow::SlotSelectItem);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    auto* pro_pic_show = dynamic_cast<PicShow*>(_picshow);
+    pro_pic_show->ReloadPic();
+    QMainWindow::resizeEvent(event);
 }
 
 void MainWindow::SlotCreatePro(bool)

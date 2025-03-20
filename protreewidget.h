@@ -30,6 +30,8 @@ private:
     std::shared_ptr<OpenTreeThread> _thread_open_pro;
 private slots:
     void SlotItemPressed(QTreeWidgetItem* pressedItem,int column);
+
+    void SlotDoubleClickedItem(QTreeWidgetItem* doubleitem,int col);
     void Slotimport();
     void SlotClosePro();
     void SlotUpdateProgress(int count);
@@ -45,6 +47,7 @@ public slots:
 signals:
     void SigCancelProgress();
     void SigCancelOpenProgress();
+    void SigUpdateSelected(const QString& );
 };
 
 #endif // PROTREEWIDGET_H

@@ -24,7 +24,13 @@
       </widget>
      </item>
      <item>
-      <widget class="ProTreeWidget" name="treeWidget"/>
+      <widget class="ProTreeWidget" name="treeWidget">
+       <column>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </column>
+      </widget>
      </item>
     </layout>
    </item>
