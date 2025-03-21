@@ -7,6 +7,7 @@
 #include <QMenu>
 #include <QFileDialog>
 #include "removeprodialog.h"
+#include "slideshowdlg.h"
 
 ProTreeWidget::ProTreeWidget(QWidget* parent):QTreeWidget(parent),_active_item(nullptr),
     _right_btn_item(nullptr),_dialog_progress(nullptr),_selected_item(nullptr),
@@ -25,6 +26,8 @@ ProTreeWidget::ProTreeWidget(QWidget* parent):QTreeWidget(parent),_active_item(n
     connect(_action_closepro,&QAction::triggered,this,&ProTreeWidget::SlotClosePro);
 
     connect(this,&ProTreeWidget::itemDoubleClicked,this,&ProTreeWidget::SlotDoubleClickedItem);
+
+    connect(_action_slideshow,&QAction::triggered,this,&ProTreeWidget::SlotSlideShow);
 
 }
 
@@ -53,7 +56,7 @@ void ProTreeWidget::AddProToTree(const QString &name, const QString &path)
 
 void ProTreeWidget::SlotItemPressed(QTreeWidgetItem *pressedItem, int column)
 {
-    qDebug()<<"slotItemPressed"<<Qt::endl;
+    //qDebug()<<"slotItemPressed"<<Qt::endl;
     if(QGuiApplication::mouseButtons()==Qt::RightButton){
         QMenu menu(this);
         int itemtype = pressedItem->type();
@@ -229,6 +232,30 @@ void ProTreeWidget::SlotCancelOpenProgress()
     emit SigCancelOpenProgress();
     delete _open_progressdlg;
     _open_progressdlg = nullptr;
+}
+
+void ProTreeWidget::SlotSlideShow()
+{
+    if(!_right_btn_item){
+        return;
+    }
+
+    auto* right_pro_item = dynamic_cast<ProTreeItem*>(_right_btn_item);
+    auto* last_child_item = right_pro_item->GetLastPicChild();
+    if(!last_child_item){
+        return;
+    }
+    auto * first_child_item = right_pro_item->GetFirstPicChild();
+    if(!first_child_item){
+        return;
+    }
+
+    //qDebug()<<"first_child_item is"<<first_child_item->GetPath();
+    //qDebug()<<"last_child_item is"<<last_child_item->GetPath();
+
+    _slide_show_dlg = std::make_shared<SlideShowDlg>(this,first_child_item,last_child_item);
+    _slide_show_dlg->setModal(true);
+    _slide_show_dlg->showMaximized();
 }
 
 void ProTreeWidget::SlotOpenPro(const QString &path)

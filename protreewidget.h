@@ -6,6 +6,7 @@
 #include <QProgressDialog>
 #include "protreethread.h"
 #include "opentreethread.h"
+class SlideShowDlg;
 
 
 class ProTreeWidget : public QTreeWidget
@@ -28,6 +29,7 @@ private:
     QProgressDialog* _open_progressdlg;
     std::shared_ptr<ProTreeThread> _thread_create_pro;
     std::shared_ptr<OpenTreeThread> _thread_open_pro;
+    std::shared_ptr<SlideShowDlg> _slide_show_dlg;
 private slots:
     void SlotItemPressed(QTreeWidgetItem* pressedItem,int column);
 
@@ -42,6 +44,8 @@ private slots:
     void SlotUpdateOpenProgress(int count);
     void SlotFinishOpenProgress();
     void SlotCancelOpenProgress();
+
+    void SlotSlideShow();
 public slots:
     void SlotOpenPro(const QString& path);
     void SlotNextShow();
