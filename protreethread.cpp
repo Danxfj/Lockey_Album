@@ -78,6 +78,7 @@ void ProTreeThread::CreateProTree(const QString &src_path,
             item->setData(0,Qt::DisplayRole,fileInfo.fileName());
             item->setData(0,Qt::DecorationRole,QIcon(":/icon/dir.png"));
             item->setData(0,Qt::ToolTipRole,sub_dist_path);
+            //QTreeWidgetItem* tempParentDir = item;   //这一行是自己加的
             CreateProTree(fileInfo.absoluteFilePath(),sub_dist_path,
                           item,file_count,self,root,preItem);
         }else{

@@ -137,7 +137,7 @@ void ProTreeWidget::SlotClosePro()
     bool b_remove = remove_pro_dialog.IsRemoved();
     auto index_right_btn = this->indexOfTopLevelItem(_right_btn_item);
     auto * protreeitem = dynamic_cast<ProTreeItem*>(_right_btn_item);
-    //auto * selecteditem = dynamic_cast<ProTreeItem*>(_selected_item);
+    auto * selecteditem = dynamic_cast<ProTreeItem*>(_selected_item);
     auto delete_path = protreeitem->GetPath();
     _set_path.remove(delete_path);
     if(b_remove){
@@ -147,6 +147,12 @@ void ProTreeWidget::SlotClosePro()
 
     if(protreeitem==_active_item){
         _active_item = nullptr;
+    }
+
+    if(selecteditem && protreeitem==selecteditem->GetRoot()){
+        selecteditem = nullptr;
+        _selected_item = nullptr;
+        emit SigClearSelected();
     }
 
     delete this->takeTopLevelItem(index_right_btn);
@@ -255,4 +261,32 @@ void ProTreeWidget::SlotOpenPro(const QString &path)
     _open_progressdlg->setFixedWidth(PROGRESS_WIDTH);
     _open_progressdlg->setRange(0,PROGRESS_WIDTH);
     _open_progressdlg->exec();
+}
+
+void ProTreeWidget::SlotNextShow()
+{
+    if(!_selected_item){
+        return;
+    }
+    auto *curItem = dynamic_cast<ProTreeItem*>(_selected_item)->GetNextItem();
+    if(!curItem){
+        return;
+    }
+    emit SigUpdatePic(curItem->GetPath());
+    _selected_item = curItem;
+    this->setCurrentItem(curItem);
+}
+
+void ProTreeWidget::SlotPreShow()
+{
+    if(!_selected_item){
+        return;
+    }
+    auto *curItem = dynamic_cast<ProTreeItem*>(_selected_item)->GetPreItem();
+    if(!curItem){
+        return;
+    }
+    emit SigUpdatePic(curItem->GetPath());
+    _selected_item = curItem;
+    this->setCurrentItem(curItem);
 }

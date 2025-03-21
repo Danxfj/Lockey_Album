@@ -30,7 +30,11 @@ private:
     QPixmap _pix_map;
 public slots:
     void SlotSelectItem(const QString& path);
-
+    void SlotUpdatePic(const QString& path);
+    void SlotDeleteItem();
+signals:
+    void SigNextClicked();
+    void SigPreClicked();
 };
 
 #endif // PICSHOW_H

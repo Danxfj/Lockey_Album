@@ -61,6 +61,7 @@ void OpenTreeThread::RecursiveProTree(const QString &src_path, int &file_count,
             item->setData(0,Qt::DisplayRole,fileinfo.fileName());
             item->setData(0,Qt::DecorationRole,QIcon(":/icon/dir.png"));
             item->setData(0,Qt::ToolTipRole,fileinfo.absoluteFilePath());
+            //QTreeWidgetItem* tempParentDir = item;   //这一行是自己加的
             RecursiveProTree(fileinfo.absoluteFilePath(),file_count,
                              self,root,item,preItem);
         }

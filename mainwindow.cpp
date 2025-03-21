@@ -51,6 +51,16 @@ MainWindow::MainWindow(QWidget *parent)
     auto* pro_pic_show = dynamic_cast<PicShow*>(_picshow);
     connect(pro_tree_widget,&ProTreeWidget::SigUpdateSelected,pro_pic_show,
             &PicShow::SlotSelectItem);
+
+    connect(pro_pic_show,&PicShow::SigNextClicked,
+            pro_tree_widget,&ProTreeWidget::SlotNextShow);
+    connect(pro_pic_show,&PicShow::SigPreClicked,
+            pro_tree_widget,&ProTreeWidget::SlotPreShow);
+    connect(pro_tree_widget,&ProTreeWidget::SigUpdatePic,
+            pro_pic_show,&PicShow::SlotUpdatePic);
+    connect(pro_tree_widget,&ProTreeWidget::SigClearSelected,pro_pic_show,
+            &PicShow::SlotDeleteItem);
+
 }
 
 MainWindow::~MainWindow()
