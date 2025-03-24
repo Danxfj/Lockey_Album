@@ -36,8 +36,11 @@ namespace {
 struct qt_meta_stringdata_CLASSPicAnimationWidENDCLASS_t {};
 constexpr auto qt_meta_stringdata_CLASSPicAnimationWidENDCLASS = QtMocHelpers::stringData(
     "PicAnimationWid",
-    "TimeOut",
-    ""
+    "SigUpPreList",
+    "",
+    "QTreeWidgetItem*",
+    "SigSelectItem",
+    "TimeOut"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -50,15 +53,23 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSPicAnimationWidENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       3,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       0,       // signalCount
+       2,       // signalCount
+
+ // signals: name, argc, parameters, tag, flags, initial metatype offsets
+       1,    1,   32,    2, 0x06,    1 /* Public */,
+       4,    1,   35,    2, 0x06,    3 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   20,    2, 0x08,    1 /* Private */,
+       5,    0,   38,    2, 0x08,    5 /* Private */,
+
+ // signals: parameters
+    QMetaType::Void, 0x80000000 | 3,    2,
+    QMetaType::Void, 0x80000000 | 3,    2,
 
  // slots: parameters
     QMetaType::Void,
@@ -75,6 +86,12 @@ Q_CONSTINIT const QMetaObject PicAnimationWid::staticMetaObject = { {
     qt_incomplete_metaTypeArray<qt_meta_stringdata_CLASSPicAnimationWidENDCLASS_t,
         // Q_OBJECT / Q_GADGET
         QtPrivate::TypeAndForceComplete<PicAnimationWid, std::true_type>,
+        // method 'SigUpPreList'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<QTreeWidgetItem *, std::false_type>,
+        // method 'SigSelectItem'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<QTreeWidgetItem *, std::false_type>,
         // method 'TimeOut'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
@@ -87,11 +104,28 @@ void PicAnimationWid::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         auto *_t = static_cast<PicAnimationWid *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->TimeOut(); break;
+        case 0: _t->SigUpPreList((*reinterpret_cast< std::add_pointer_t<QTreeWidgetItem*>>(_a[1]))); break;
+        case 1: _t->SigSelectItem((*reinterpret_cast< std::add_pointer_t<QTreeWidgetItem*>>(_a[1]))); break;
+        case 2: _t->TimeOut(); break;
         default: ;
         }
+    } else if (_c == QMetaObject::IndexOfMethod) {
+        int *result = reinterpret_cast<int *>(_a[0]);
+        {
+            using _t = void (PicAnimationWid::*)(QTreeWidgetItem * );
+            if (_t _q_method = &PicAnimationWid::SigUpPreList; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
+                *result = 0;
+                return;
+            }
+        }
+        {
+            using _t = void (PicAnimationWid::*)(QTreeWidgetItem * );
+            if (_t _q_method = &PicAnimationWid::SigSelectItem; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
+                *result = 1;
+                return;
+            }
+        }
     }
-    (void)_a;
 }
 
 const QMetaObject *PicAnimationWid::metaObject() const
@@ -113,14 +147,28 @@ int PicAnimationWid::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 3;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 1)
+        if (_id < 3)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 1;
+        _id -= 3;
     }
     return _id;
+}
+
+// SIGNAL 0
+void PicAnimationWid::SigUpPreList(QTreeWidgetItem * _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
+}
+
+// SIGNAL 1
+void PicAnimationWid::SigSelectItem(QTreeWidgetItem * _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 QT_WARNING_POP

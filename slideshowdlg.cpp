@@ -1,5 +1,6 @@
 #include "slideshowdlg.h"
 #include "ui_slideshowdlg.h"
+#include "prelistwid.h"
 
 
 SlideShowDlg::SlideShowDlg(QWidget *parent,QTreeWidgetItem* first_item,
@@ -24,7 +25,12 @@ SlideShowDlg::SlideShowDlg(QWidget *parent,QTreeWidgetItem* first_item,
                           ":/icon/pause.png",
                           ":/icon/pause_hover.png",
                           ":/icon/pause_press.png");
+
+    auto* prelistwid = dynamic_cast<PreListWid*>(ui->preListWidget);
+    connect(ui->picAnimation,&PicAnimationWid::SigUpPreList,prelistwid,&PreListWid::SlotUpPreList);
+
     ui->picAnimation->setPixmap(_first_item);
+
     ui->picAnimation->Start();
 }
 
