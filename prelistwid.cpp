@@ -3,12 +3,13 @@
 #include "const.h"
 #include <QPainter>
 #include "prelistitem.h"
-
-PreListWid::PreListWid(QWidget *parent):_global(0),QListWidget(parent)
+#include <QGuiApplication>
+PreListWid::PreListWid(QWidget *parent):_global(0),QListWidget(parent),_last_index(17)
 {
     this->setViewMode(QListWidget::IconMode);
     this->setIconSize(QSize(PREICON_SIZE,PREICON_SIZE));
     this->setSpacing(5);
+    connect(this,&PreListWid::itemPressed,this,&PreListWid::SlotItemPressed);
 }
 
 PreListWid::~PreListWid()
@@ -65,5 +66,38 @@ void PreListWid::SlotUpPreList(QTreeWidgetItem *tree_item)
 
 void PreListWid::SlotUpSelect(QTreeWidgetItem *tree_item)
 {
+    if(!tree_item){
+        return;
+    }
 
+    auto* pro_item = dynamic_cast<ProTreeItem*>(tree_item);
+    auto path = pro_item->GetPath();
+    auto iter = _set_items.find(path);
+    if(iter == _set_items.end()){
+        return;
+    }
+
+    auto* list_item = dynamic_cast<PreListItem*>(iter.value());
+    auto index = list_item->GetIndex();
+    if(index>17){
+        auto pos_cur = this->pos();
+        this->move(pos_cur.x()-(index-_last_index)*100,pos_cur.y());
+    }else{
+        this->move(_pos_origin);
+        _last_index=17;
+    }
+    this->setCurrentItem(iter.value());
+}
+
+void PreListWid::SlotItemPressed(QListWidgetItem *item)
+{
+    if(QGuiApplication::mouseButtons() !=Qt::LeftButton){
+        return;
+    }
+
+    auto* list_item = dynamic_cast<PreListItem*>(item);
+    auto cur_index = list_item->GetIndex();
+    auto path = list_item->GetPath();
+    this->setCurrentItem(item);
+    emit SigUpSelectShow(path);
 }

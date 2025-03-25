@@ -36,11 +36,51 @@ void ProTreeItem::SetNextItem(QTreeWidgetItem *item)
 
 ProTreeItem *ProTreeItem::GetPreItem()
 {
-    return dynamic_cast<ProTreeItem*>(_pre_item);
+    if(_pre_item){
+        ProTreeItem* pre = dynamic_cast<ProTreeItem*>(_pre_item);
+        if(pre&&pre->type()==TreeItemPic){
+            return pre;
+        }
+    }
+    QTreeWidgetItem* parent = this->parent();
+    if(!parent) return nullptr;
+    int index = parent->indexOfChild(this);
+    for(int i=index-1;i>=0;--i){
+        ProTreeItem* sibling = dynamic_cast<ProTreeItem*>(parent->child(i));
+        if(sibling->type()==TreeItemPic){
+            return sibling;
+        }
+        else if(sibling->type()==TreeItemDir){
+            ProTreeItem* last_pic=sibling->GetLastPicChild();
+            if(last_pic) return last_pic;
+        }
+    }
+    return nullptr;
+    //return dynamic_cast<ProTreeItem*>(_pre_item);
 }
 
 ProTreeItem *ProTreeItem::GetNextItem()
 {
+    /*if(_next_item){
+        ProTreeItem* next = dynamic_cast<ProTreeItem*>(_next_item);
+        if(next&&next->type()==TreeItemPic){
+            return next;
+        }
+    }
+    QTreeWidgetItem* parent = this->parent();
+    if(!parent) return nullptr;
+    int index = parent->indexOfChild(this);
+    for(int i=index+1;i<count;i++){
+        ProTreeItem* sibling = dynamic_cast<ProTreeItem*>(parent->child(i));
+        if(sibling->type()==TreeItemPic){
+            return sibling;
+        }
+        else if(sibling->type()==TreeItemDir){
+            ProTreeItem* first_pic=sibling->GetFirstPicChild();
+            if(first_pic) return first_pic;
+        }
+    }
+    return nullptr;*/
     return dynamic_cast<ProTreeItem*>(_next_item);
 }
 

@@ -8,7 +8,7 @@
 #include <QFileDialog>
 #include "removeprodialog.h"
 #include "slideshowdlg.h"
-
+#include <QAudioOutput>
 ProTreeWidget::ProTreeWidget(QWidget* parent):QTreeWidget(parent),_active_item(nullptr),
     _right_btn_item(nullptr),_dialog_progress(nullptr),_selected_item(nullptr),
     _thread_create_pro(nullptr),
@@ -29,6 +29,24 @@ ProTreeWidget::ProTreeWidget(QWidget* parent):QTreeWidget(parent),_active_item(n
 
     connect(_action_slideshow,&QAction::triggered,this,&ProTreeWidget::SlotSlideShow);
 
+    /*_player = new QMediaPlayer(this);
+    setLoopMode(true);
+    _audioOutput = new QAudioOutput(this);
+    _player->setSource(QUrl::fromLocalFile("E:\\C++Script\\QtProject\\Album\\test001\\zhaolei.mp3"));
+    _player->setAudioOutput(_audioOutput);
+    _player->play();*/
+
+    /*connect(_player,&QMediaPlayer::playbackStateChanged,[=](QMediaPlayer::PlaybackState state){
+        if(state==QMediaPlayer::StoppedState&&!_playlist.isEmpty()){
+            if(_loopEnabled){
+                _currentIndex = (_currentIndex+1)%_playlist.size();
+                _player->setSource(_playlist[_currentIndex]);
+                _player->play();
+            }else{
+                _currentIndex = -1;
+            }
+        }
+    });*/
 }
 
 void ProTreeWidget::AddProToTree(const QString &name, const QString &path)
@@ -52,6 +70,19 @@ void ProTreeWidget::AddProToTree(const QString &name, const QString &path)
     item->setData(0,Qt::DecorationRole,QIcon(":/icon/dir.png"));
     item->setData(0,Qt::ToolTipRole,file_path);
     this->addTopLevelItem(item);
+}
+
+/*void ProTreeWidget::playNext()
+{
+    if(_playlist.isEmpty()) return;
+    _currentIndex=(_currentIndex+1)%_playlist.size();
+    _player->setSource(_playlist[_currentIndex]);
+    _player->play();
+}*/
+
+void ProTreeWidget::setLoopMode(bool enable)
+{
+    _loopEnabled = enable;
 }
 
 void ProTreeWidget::SlotItemPressed(QTreeWidgetItem *pressedItem, int column)
@@ -316,4 +347,62 @@ void ProTreeWidget::SlotPreShow()
     emit SigUpdatePic(curItem->GetPath());
     _selected_item = curItem;
     this->setCurrentItem(curItem);
+}
+
+void ProTreeWidget::SlotSetMusic()
+{
+    QFileDialog file_dialog;
+    file_dialog.setFileMode(QFileDialog::ExistingFiles);
+    file_dialog.setWindowTitle(tr("选择音频文件"));
+    file_dialog.setDirectory(QDir::currentPath());
+    file_dialog.setViewMode(QFileDialog::Detail);
+    file_dialog.setNameFilter("(*.mp3)");
+    QStringList fileNames;
+    if(file_dialog.exec()){
+        fileNames = file_dialog.selectedFiles();
+    }else{
+        return;
+    }
+
+    if(fileNames.length()<=0){
+        return;
+    }
+
+    _playlist.clear();
+    for(auto filename:fileNames){
+        _playlist.emplace_back(QUrl::fromLocalFile(filename));
+    }
+}
+
+void ProTreeWidget::SlotStartMusic()
+{
+
+    if(!_playlist.empty()){
+        _player = new QMediaPlayer(this);
+        setLoopMode(true);
+        _audioOutput = new QAudioOutput(this);
+        _currentIndex=0;
+        _player->setSource(_playlist[_currentIndex]);
+        //_player->setSource(QUrl::fromLocalFile("E:\\C++Script\\QtProject\\Album\\test001\\zhaolei.mp3"));
+        _player->setAudioOutput(_audioOutput);
+        _player->play();
+    }
+    /*connect(_player,&QMediaPlayer::playbackStateChanged,[=](QMediaPlayer::PlaybackState state){
+        if(state==QMediaPlayer::StoppedState&&!_playlist.isEmpty()){
+            if(_loopEnabled){
+                _currentIndex = (_currentIndex+1)%_playlist.size();
+                _player->setSource(_playlist[_currentIndex]);
+                _player->play();
+            }else{
+                _currentIndex = -1;
+            }
+        }
+    });*/
+}
+
+void ProTreeWidget::SlotStopMusic()
+{
+    if(_playlist.empty()) return;
+    _player->stop();
+    _currentIndex = -1;
 }

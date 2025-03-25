@@ -1,7 +1,9 @@
 #include "slideshowdlg.h"
 #include "ui_slideshowdlg.h"
 #include "prelistwid.h"
-
+#include "protreewidget.h"
+#include <QFileDialog>
+#include <QAudioOutput>
 
 SlideShowDlg::SlideShowDlg(QWidget *parent,QTreeWidgetItem* first_item,
                            QTreeWidgetItem* last_item)
@@ -25,9 +27,40 @@ SlideShowDlg::SlideShowDlg(QWidget *parent,QTreeWidgetItem* first_item,
                           ":/icon/pause.png",
                           ":/icon/pause_hover.png",
                           ":/icon/pause_press.png");
+    connect(ui->closeBtn,&QPushButton::clicked,this,&SlideShowDlg::close);
+    connect(ui->slidenextBtn,&QPushButton::clicked,this,&SlideShowDlg::SlotSlideNext);
+    connect(ui->slidepreBtn,&QPushButton::clicked,this,&SlideShowDlg::SlotSlidePre);
 
     auto* prelistwid = dynamic_cast<PreListWid*>(ui->preListWidget);
     connect(ui->picAnimation,&PicAnimationWid::SigUpPreList,prelistwid,&PreListWid::SlotUpPreList);
+    connect(ui->picAnimation,&PicAnimationWid::SigSelectItem,prelistwid,&PreListWid::SlotUpSelect);
+
+    connect(prelistwid,&PreListWid::SigUpSelectShow,
+            ui->picAnimation,&PicAnimationWid::SlotUpSelectShow);
+
+    connect(ui->palyBtn,&PicStateBtn::clicked,ui->picAnimation,
+            &PicAnimationWid::SlotStartOrStop);
+    connect(ui->picAnimation,&PicAnimationWid::SigStart,ui->palyBtn,&PicStateBtn::SlotStart);
+    connect(ui->picAnimation,&PicAnimationWid::SigStop,ui->palyBtn,&PicStateBtn::SlotStop);
+
+    auto* _protree_widget = dynamic_cast<ProTreeWidget*>(parent);
+    connect(ui->picAnimation,&PicAnimationWid::SigStartMusic,
+            _protree_widget,&ProTreeWidget::SlotStartMusic);
+
+    connect(ui->picAnimation,&PicAnimationWid::SigStopMusic,
+            _protree_widget,&ProTreeWidget::SlotStopMusic);
+
+
+    /*connect(_player, &QMediaPlayer::errorOccurred, this, [](QMediaPlayer::Error error, const QString &errorString) {
+        qDebug() << "Error:" << error << errorString;
+    });
+    // 检查媒体状态
+    connect(_player, &QMediaPlayer::mediaStatusChanged, this, [](QMediaPlayer::MediaStatus status) {
+        qDebug() << "Media status:" << status;
+    });
+
+    qDebug()<<_player->playbackState();*/
+
 
     ui->picAnimation->setPixmap(_first_item);
 
@@ -38,3 +71,16 @@ SlideShowDlg::~SlideShowDlg()
 {
     delete ui;
 }
+
+void SlideShowDlg::SlotSlideNext()
+{
+    ui->picAnimation->SlideNext();
+}
+
+void SlideShowDlg::SlotSlidePre()
+{
+    ui->picAnimation->SlidePre();
+}
+
+
+

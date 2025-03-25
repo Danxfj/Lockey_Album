@@ -51,6 +51,9 @@ void PicAnimationWid::setPixmap(QTreeWidgetItem *item)
 
 void PicAnimationWid::Start()
 {
+    emit SigStart();
+    emit SigStartMusic();
+
     _factor = 0;
     _timer->start(25);
     _b_start = true;
@@ -58,9 +61,43 @@ void PicAnimationWid::Start()
 
 void PicAnimationWid::Stop()
 {
+    emit SigStop();
+    emit SigStopMusic();
     _timer->stop();
     _factor = 0;
     _b_start = false;
+}
+
+void PicAnimationWid::SlideNext()
+{
+    Stop();
+    if(!_cur_item){
+        return;
+    }
+
+    auto* cur_pro_item = dynamic_cast<ProTreeItem*>(_cur_item);
+    auto* next_item = cur_pro_item->GetNextItem();
+    if(!next_item){
+        return;
+    }
+    setPixmap(next_item);
+    update();
+}
+
+void PicAnimationWid::SlidePre()
+{
+    Stop();
+    if(!_cur_item){
+        return;
+    }
+
+    auto* cur_pro_item = dynamic_cast<ProTreeItem*>(_cur_item);
+    auto* pre_item = cur_pro_item->GetPreItem();
+    if(!pre_item){
+        return;
+    }
+    setPixmap(pre_item);
+    update();
 }
 
 void PicAnimationWid::paintEvent(QPaintEvent *event)
@@ -111,6 +148,59 @@ void PicAnimationWid::paintEvent(QPaintEvent *event)
 
 }
 
+void PicAnimationWid::UpSelectPixmap(QTreeWidgetItem *item)
+{
+    if(!item){
+        return;
+    }
+
+    auto* tree_item = dynamic_cast<ProTreeItem*>(item);
+    auto path = tree_item->GetPath();
+    _pixmap1.load(path);
+    _cur_item = tree_item;
+
+    if(_map_items.find(path)==_map_items.end()){
+        _map_items[path] = tree_item;
+    }
+
+    auto* next_item = tree_item->GetNextItem();
+    if(!next_item){
+        return;
+    }
+    auto next_path = next_item->GetPath();
+    _pixmap2.load(next_path);
+    if(_map_items.find(next_path)==_map_items.end()){
+        _map_items[next_path]=next_item;
+    }
+
+}
+
+void PicAnimationWid::SlotUpSelectShow(QString path)
+{
+    auto iter = _map_items.find(path);
+    if(iter == _map_items.end()){
+        return;
+    }
+    UpSelectPixmap(iter.value());
+    update();
+}
+
+void PicAnimationWid::SlotStartOrStop()
+{
+    if(!_b_start){
+        _factor=0;
+        _timer->start(25);
+        _b_start = true;
+        emit SigStartMusic();
+    }else{
+        _timer->stop();
+        _factor = 0;
+        update();
+        _b_start = false;
+        emit SigStopMusic();
+    }
+}
+
 void PicAnimationWid::TimeOut()
 {
     if(!_cur_item){
@@ -129,7 +219,6 @@ void PicAnimationWid::TimeOut()
             update();
             return;
         }
-
         setPixmap(next_pro_item);
         update();
         return;
